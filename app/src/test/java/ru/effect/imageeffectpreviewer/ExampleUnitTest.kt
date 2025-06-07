@@ -1,4 +1,4 @@
-package ru.image.imageeffectpreviewer
+package ru.effect.imageeffectpreviewer
 
 import org.junit.Test
 

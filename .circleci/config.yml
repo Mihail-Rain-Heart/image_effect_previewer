@@ -1,5 +1,3 @@
-# This config was automatically generated from your source code
-# Stacks detected: cicd:github-actions:.github/workflows,deps:java:.,tool:gradle:
 version: 2.1
 jobs:
   test-java:
@@ -14,6 +12,9 @@ jobs:
                     sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
       - restore_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+      - run:
+          name: Ensure gradlew is executable
+          command: chmod +x ./gradlew
       - run:
           command: ./gradlew check
       - store_test_results:

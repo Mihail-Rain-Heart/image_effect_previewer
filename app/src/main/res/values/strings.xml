@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">ImageEffectPreviewer</string>
+    <string name="app_name" translatable="false">ImageEffectPreviewer</string>
+
+    <!-- Toolbox -->
+    <string name="toolbox_title">Toolbox</string>
 </resources>

@@ -12,10 +12,9 @@ jobs:
                     sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
       - restore_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+      - run: chmod +x gradlew
       - run:
-          name: Ensure gradlew is executable
-          command: chmod +x ./gradlew
-      - run:
+          name: Run Gradle checks
           command: ./gradlew check
       - store_test_results:
           path: build/test-results
@@ -25,22 +24,39 @@ jobs:
             - ~/.gradle/caches
       - store_artifacts:
           path: build/reports
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
+  build-apk:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - run: chmod +x gradlew
+      - run:
+          name: Build APK
+          command: ./gradlew assemble
+      - store_artifacts:
+          path: app/build/outputs/apk/debug/app-debug.apk
+  upload-apk-to-gdrive:
     docker:
       - image: cimg/base:stable
     steps:
-      # Replace this with steps to deploy to users
+      - checkout
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Install dependencies
+          command: |-
+            sudo apt-get update && sudo apt-get install -y python3-pip
+            pip3 install --user gdown
       - run:
-          name: found github actions config
-          command: ':'
+          name: Upload APK to Google Drive
+          command: |
+            # Placeholder for uploading APK to Google Drive
+            echo "Please replace this step with your actual upload script or tool."
 workflows:
   build-and-test:
     jobs:
       - test-java
-    # - deploy:
-    #     requires:
-    #       - test-java
+      - build-apk:
+          requires:
+            - test-java
+      - upload-apk-to-gdrive:
+          requires:
+            - build-apk
